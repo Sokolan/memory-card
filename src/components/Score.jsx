@@ -1,8 +1,10 @@
-export default function Score() {
+import { useEffect } from "react";
+
+export default function Score({ score }) {
   return (
     <div className="scoreContainer">
-      <p>Score: </p>
-      <p>Best Score:</p>
+      <p>Score: {score.score}</p>
+      <p>Best Score: {score.maxScore}</p>
     </div>
   );
 }

@@ -24,7 +24,7 @@ async function createCardsArray(size) {
   return cardsArray;
 }
 
-function shuffleCardsArray(cardsArray, setCardsArray) {
+function shuffleCardsArray(cardsArray) {
   const cardsArrayShuffled = cardsArray.slice();
   let n = cardsArray.length;
 
@@ -37,7 +37,7 @@ function shuffleCardsArray(cardsArray, setCardsArray) {
     ];
   }
 
-  setCardsArray(cardsArrayShuffled);
+  return cardsArrayShuffled;
 }
 
 function App() {
@@ -50,6 +50,8 @@ function App() {
       })
   );
 
+  const [score, setScore] = useState({ score: 0, maxScore: 0 });
+
   useEffect(() => {
     async function fetchAndFillArray() {
       const cardsArrayFilled = await createCardsArray(numebrOfCards);
@@ -58,15 +60,40 @@ function App() {
     fetchAndFillArray();
   }, []);
 
+  useEffect(() => {
+    if (score.score > score.maxScore) {
+      setScore({ ...score, maxScore: score.score });
+    }
+  }, [score]);
+
   const handleCardClick = (clickedCardId) => {
-    if (cardsInformation.find((card) => card.id === clickedCardId).clicked) {
+    const currentScore = score.score;
+    const currentCard = cardsInformation.find(
+      (card) => card.id === clickedCardId
+    );
+
+    if (currentCard.clicked) {
+      console.log("clicked");
       setCardsInformation(
         cardsInformation.map((card) => {
           return { ...card, clicked: false };
         })
       );
+      setScore({ ...score, score: 0 });
+      setCardsInformation(shuffleCardsArray(cardsInformation));
+      return;
     }
-    shuffleCardsArray(cardsInformation, setCardsInformation);
+    setCardsInformation(
+      cardsInformation.map((card) => {
+        if (card.id === currentCard.id) {
+          return { ...card, clicked: true };
+        }
+        return card;
+      })
+    );
+    setCardsInformation(shuffleCardsArray(cardsInformation));
+    console.log(currentCard);
+    setScore({ ...score, score: currentScore + 1 });
   };
 
   return (
@@ -79,7 +106,7 @@ function App() {
             than once!
           </p>
         </div>
-        <Score />
+        <Score score={score} />
       </header>
       <CardsBoard
         cardsInformation={cardsInformation}
