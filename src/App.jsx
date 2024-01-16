@@ -24,22 +24,6 @@ async function createCardsArray(size) {
   return cardsArray;
 }
 
-function shuffleCardsArray(cardsArray) {
-  const cardsArrayShuffled = cardsArray.slice();
-  let n = cardsArray.length;
-
-  while (n > 0) {
-    const i = Math.floor(Math.random() * n);
-    n -= 1;
-    [cardsArrayShuffled[i], cardsArrayShuffled[n]] = [
-      cardsArrayShuffled[n],
-      cardsArrayShuffled[i],
-    ];
-  }
-
-  return cardsArrayShuffled;
-}
-
 function App() {
   const numebrOfCards = 5;
   const [cardsInformation, setCardsInformation] = useState(
@@ -60,12 +44,21 @@ function App() {
     fetchAndFillArray();
   }, []);
 
-  useEffect(() => {
-    if (score.score > score.maxScore) {
-      setScore({ ...score, maxScore: score.score });
-    }
-  }, [score]);
+  function shuffleCardsArray(cardsArray) {
+    const cardsArrayShuffled = cardsArray.slice();
+    let n = cardsArray.length;
 
+    while (n > 0) {
+      const i = Math.floor(Math.random() * n);
+      n -= 1;
+      [cardsArrayShuffled[i], cardsArrayShuffled[n]] = [
+        cardsArrayShuffled[n],
+        cardsArrayShuffled[i],
+      ];
+    }
+
+    return cardsArrayShuffled;
+  }
   const handleCardClick = (clickedCardId) => {
     const currentScore = score.score;
     const currentCard = cardsInformation.find(
@@ -74,26 +67,36 @@ function App() {
 
     if (currentCard.clicked) {
       setCardsInformation(
-        cardsInformation.map((card) => {
-          return { ...card, clicked: false };
-        })
+        shuffleCardsArray(
+          cardsInformation.map((card) => {
+            return { ...card, clicked: false };
+          })
+        )
       );
       setScore({ ...score, score: 0 });
       return;
     } else {
       setCardsInformation(
-        cardsInformation.map((card) => {
-          if (card.id === currentCard.id) {
-            console.log({ ...card, clicked: true });
-            return { ...card, clicked: true };
-          }
-          return card;
-        })
+        shuffleCardsArray(
+          cardsInformation.map((card) => {
+            if (card.id === currentCard.id) {
+              return { ...card, clicked: true };
+            }
+            return card;
+          })
+        )
       );
-      setScore({ ...score, score: currentScore + 1 });
+      if (score.score + 1 <= score.maxScore) {
+        setScore({ ...score, score: currentScore + 1 });
+      } else {
+        setScore({
+          ...score,
+          score: currentScore + 1,
+          maxScore: score.maxScore + 1,
+        });
+      }
     }
-
-    setCardsInformation(shuffleCardsArray(cardsInformation));
+    // setCardsInformation(shuffleCardsArray(cardsInformation));
   };
 
   return (
