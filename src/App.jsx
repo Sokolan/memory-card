@@ -41,7 +41,7 @@ function shuffleCardsArray(cardsArray) {
 }
 
 function App() {
-  const numebrOfCards = 15;
+  const numebrOfCards = 5;
   const [cardsInformation, setCardsInformation] = useState(
     Array(numebrOfCards)
       .fill(null)
@@ -73,27 +73,27 @@ function App() {
     );
 
     if (currentCard.clicked) {
-      console.log("clicked");
       setCardsInformation(
         cardsInformation.map((card) => {
           return { ...card, clicked: false };
         })
       );
       setScore({ ...score, score: 0 });
-      setCardsInformation(shuffleCardsArray(cardsInformation));
       return;
+    } else {
+      setCardsInformation(
+        cardsInformation.map((card) => {
+          if (card.id === currentCard.id) {
+            console.log({ ...card, clicked: true });
+            return { ...card, clicked: true };
+          }
+          return card;
+        })
+      );
+      setScore({ ...score, score: currentScore + 1 });
     }
-    setCardsInformation(
-      cardsInformation.map((card) => {
-        if (card.id === currentCard.id) {
-          return { ...card, clicked: true };
-        }
-        return card;
-      })
-    );
+
     setCardsInformation(shuffleCardsArray(cardsInformation));
-    console.log(currentCard);
-    setScore({ ...score, score: currentScore + 1 });
   };
 
   return (
