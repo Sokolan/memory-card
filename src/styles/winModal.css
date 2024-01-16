@@ -1,0 +1,10 @@
+.winModal {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 60px;
+  align-self: center;
+  border: 8px solid black;
+}

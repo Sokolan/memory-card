@@ -7,3 +7,7 @@
   height: 160px;
   width: auto;
 }
+
+button:focus {
+    outline: 0 !important;
+}

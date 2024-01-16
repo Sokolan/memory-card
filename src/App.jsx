@@ -3,6 +3,7 @@ import { v4 as uuid } from "uuid";
 import "./App.css";
 import Score from "./components/Score";
 import CardsBoard from "./components/CardsBoard";
+import WinModal from "./components/WinModal";
 
 async function createPokemon(id) {
   const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${id + 1}`);
@@ -25,7 +26,7 @@ async function createCardsArray(size) {
 }
 
 function App() {
-  const numebrOfCards = 5;
+  const numebrOfCards = 15;
   const [cardsInformation, setCardsInformation] = useState(
     Array(numebrOfCards)
       .fill(null)
@@ -59,6 +60,7 @@ function App() {
 
     return cardsArrayShuffled;
   }
+
   const handleCardClick = (clickedCardId) => {
     const currentScore = score.score;
     const currentCard = cardsInformation.find(
@@ -96,11 +98,18 @@ function App() {
         });
       }
     }
-    // setCardsInformation(shuffleCardsArray(cardsInformation));
   };
+
+  const resetScore = () => {
+    setScore({...score, score: 0});
+    setCardsInformation(cardsInformation.map(card => {
+      return {...card, clicked: false}
+    }));
+  }
 
   return (
     <div className="App">
+      <WinModal score={score.score} numebrOfCards={numebrOfCards} resetScore={resetScore} />
       <header>
         <div className="headerDescription">
           <h1>Memory Cards</h1>
