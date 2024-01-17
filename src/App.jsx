@@ -26,7 +26,7 @@ async function createCardsArray(size) {
 }
 
 function App() {
-  const numebrOfCards = 15;
+  const [numebrOfCards, setNumberOfCards] = useState(15);
   const [cardsInformation, setCardsInformation] = useState(
     Array(numebrOfCards)
       .fill(null)
@@ -35,6 +35,10 @@ function App() {
       })
   );
 
+  function setEasyMode() {
+    setNumberOfCards(1);
+    setCardsInformation(cardsInformation.slice(0, 1));
+  }
   const [score, setScore] = useState({ score: 0, maxScore: 0 });
 
   useEffect(() => {
@@ -101,15 +105,21 @@ function App() {
   };
 
   const resetScore = () => {
-    setScore({...score, score: 0});
-    setCardsInformation(cardsInformation.map(card => {
-      return {...card, clicked: false}
-    }));
-  }
+    setScore({ ...score, score: 0 });
+    setCardsInformation(
+      cardsInformation.map((card) => {
+        return { ...card, clicked: false };
+      })
+    );
+  };
 
   return (
     <div className="App">
-      <WinModal score={score.score} numebrOfCards={numebrOfCards} resetScore={resetScore} />
+      <WinModal
+        score={score.score}
+        numebrOfCards={numebrOfCards}
+        resetScore={resetScore}
+      />
       <header>
         <div className="headerDescription">
           <h1>Memory Cards</h1>
@@ -124,6 +134,7 @@ function App() {
         cardsInformation={cardsInformation}
         handleCardClick={handleCardClick}
       />
+      <button onClick={() => setEasyMode()}>Click here for easy mode</button>
     </div>
   );
 }
